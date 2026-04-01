@@ -34,7 +34,7 @@ session_start();
 </nav>
 
     <div class="container pt-5 mt-5">
-        <h2 class="text-neon-blue mb-4 fw-bold pt-4 border-bottom border-secondary pb-2">TOP 20 DU MOIS</h2>
+        <h2 class="text-neon-blue mb-4 fw-bold pt-4 border-bottom border-secondary pb-2">TOP 15 DU MOIS</h2>
         <div class="row" id="game-list"></div>
     </div>
 

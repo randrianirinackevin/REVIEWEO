@@ -1,81 +1,41 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
 session_start();
+require_once __DIR__ . '/vendor/autoload.php';
 
-// Active l'affichage des erreurs pour le débogage
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-// 1. Vérification de la connexion
+// 1. Vérifier s'il est connecté
 if (!isset($_SESSION['user_id'])) {
-    die("Erreur : Vous devez être connecté pour publier une critique.");
+    die("Accès refusé : Connectez-vous.");
+}
+
+// 2. VÉRIFIER LE RÔLE (0 = User, 1 = Critique, 2 = Admin)
+// On bloque si le rôle est inférieur à 1
+if (!isset($_SESSION['role']) || $_SESSION['role'] < 1) {
+    die("Accès refusé : Vous n'avez pas l'autorisation de publier des critiques.");
 }
 
 $db = (new App\Config\Database())->getConnection();
+// ... la suite de ton code d'insertion ...
 
-// 2. Vérification de la soumission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // Récupération et nettoyage des données
-    $titre    = trim($_POST['titre'] ?? '');
-    $note     = intval($_POST['note'] ?? 0);
-    $contenu  = trim($_POST['contenu'] ?? '');
-    $id_user  = $_SESSION['user_id'];
-    $categories = $_POST['categories'] ?? []; // Tableau d'IDs de catégories
-
-    // Validation simple
-    if (empty($titre) || empty($contenu)) {
-        die("Erreur : Le titre et le contenu ne peuvent pas être vides.");
-    }
-
     try {
-        // Début d'une transaction pour s'assurer que tout est enregistré ou rien du tout
         $db->beginTransaction();
 
-        // 3. Insertion de la critique dans la table 'critique'
-        $sql = "INSERT INTO critique (titre, contenu, note, date_creation, id_user) 
-                VALUES (:titre, :contenu, :note, NOW(), :id_user)";
-        $stmt = $db->prepare($sql);
+        $stmt = $db->prepare("INSERT INTO critique (titre, contenu, note, date_creation, id_user) VALUES (?, ?, ?, NOW(), ?)");
+        $stmt->execute([$_POST['titre'], $_POST['contenu'], $_POST['note'], $_SESSION['user_id']]);
         
-        $stmt->execute([
-            ':titre'   => $titre,
-            ':contenu' => $contenu,
-            ':note'    => $note,
-            ':id_user' => $id_user
-        ]);
-
-        // 4. Récupération de l'ID de la critique que l'on vient d'insérer
         $id_critique = $db->lastInsertId();
 
-        // 5. Insertion des liens dans la table de liaison 'critique_categorie'
-        if (!empty($categories) && is_array($categories)) {
-            $sql_cat = "INSERT INTO critique_categorie (id_critique, id_categorie) VALUES (:id_crit, :id_cat)";
-            $stmt_cat = $db->prepare($sql_cat);
-
-            foreach ($categories as $id_categorie) {
-                $stmt_cat->execute([
-                    ':id_crit' => $id_critique,
-                    ':id_cat'  => intval($id_categorie)
-                ]);
+        if (!empty($_POST['categories'])) {
+            $stmt_cat = $db->prepare("INSERT INTO critique_categorie (id_critique, id_categorie) VALUES (?, ?)");
+            foreach ($_POST['categories'] as $id_cat) {
+                $stmt_cat->execute([$id_critique, $id_cat]);
             }
         }
 
-        // Si tout est ok, on valide la transaction
         $db->commit();
-
-        // Redirection vers la liste des critiques
-        header("Location: voir_critiques.php?success=1");
-        exit();
-
-    } catch (PDOException $e) {
-        // En cas d'erreur, on annule tout ce qui a été fait dans la transaction
-        if ($db->inTransaction()) {
-            $db->rollBack();
-        }
-        die("Erreur lors de l'enregistrement en base de données : " . $e->getMessage());
+        header("Location: voir_critiques.php");
+    } catch (Exception $e) {
+        $db->rollBack();
+        die("Erreur : " . $e->getMessage());
     }
-} else {
-    // Si on accède au fichier sans POST
-    header("Location: rediger.php");
-    exit();
 }

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 session_start();
-
+// Seuls les critiques (role 1) et les admins (role 2) peuvent supprimer une critique
 if (isset($_GET['id']) && isset($_SESSION['user_id'])) {
     $db = (new App\Config\Database())->getConnection();
     

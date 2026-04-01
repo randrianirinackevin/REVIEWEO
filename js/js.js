@@ -12,7 +12,7 @@ async function init() {
         renderCards(data.results, home);
     }
     if (trends) {
-        const res = await fetch(`https://api.rawg.io/api/games?key=${API_KEY}&dates=2026-03-01,2026-03-31&ordering=-rating&page_size=20&lang=fr`);
+        const res = await fetch(`https://api.rawg.io/api/games?key=${API_KEY}&dates=2026-03-01,2026-03-31&ordering=-rating&page_size=15&lang=fr`);
         const data = await res.json();
         renderCards(data.results, trends);
     }
