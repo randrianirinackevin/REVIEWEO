@@ -1,18 +1,6 @@
 <?php
 session_start();
 ?>
-<ul class="navbar-nav ms-auto gap-3">
-    <li class="nav-item"><a class="nav-link" href="index.php">Accueil</a></li>
-    
-    <?php if(isset($_SESSION['user_id'])): ?>
-        <li class="nav-item"><span class="nav-link text-neon-green">Salut, <?= $_SESSION['pseudo'] ?></span></li>
-        <li class="nav-item"><a class="nav-link btn-neon-red" href="logout.php">Déconnexion</a></li>
-    <?php else: ?>
-        <li class="nav-item"><a class="nav-link" href="connexion.php">Connexion</a></li>
-        <li class="nav-item"><a class="nav-link btn-neon-blue" href="inscription.php">S'inscrire</a></li>
-    <?php endif; ?>
-</ul>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -24,56 +12,71 @@ session_start();
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="index.php">REVIEWEO <span class="text-neon-green">GAMES</span></a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto gap-3 align-items-center">
-                <li class="nav-item"><a class="nav-link" href="index.php">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link" href="tendances.php">Tendances</a></li>
-                <li class="nav-item"><a class="nav-link" href="rediger.php">Critiques</a></li>
-                
-                <?php if(isset($_SESSION['user_id'])): ?>
-                    <li class="nav-item"><span class="nav-link text-neon-green small">Salut, <?= $_SESSION['pseudo'] ?></span></li>
-                    <li class="nav-item"><a class="nav-link btn-neon-red px-3" href="logout.php">Déconnexion</a></li>
-                <?php else: ?>
-                    <li class="nav-item"><a class="nav-link" href="connexion.php">Connexion</a></li>
-                    <li class="nav-item"><a class="nav-link btn-neon-blue px-3" href="inscription.php">S'inscrire</a></li>
-                <?php endif; ?>
-            </ul>
-        </div>
-    </div>
-</nav>
 
-    <div class="hero-section">
-        <img src="assets/intro.gif" class="hero-video">
-        <div class="hero-overlay">
-            <div class="container h-100 d-flex align-items-center">
-                <div class="col-lg-7 mt-5">
-                    <span class="badge bg-danger mb-3 px-3 py-2 border-red text-white">EXCLUSIVITÉ 2026</span>
-                    <h1 class="display-3 fw-bold text-white mb-3">L'AVENTURE <br><span class="text-neon-blue">COMMENCE ICI</span></h1>
-                    <p class="lead text-white-50 mb-4" style="max-width: 600px;">Découvrez les derniers hits, rédigez vos propres critiques et rejoignez la plus grande communauté de gamers passionnés.</p>
-                    <div class="d-flex gap-3">
-                        <a href="tendances.php" class="btn btn-neon-blue px-5 py-3">VOIR LES HITS</a>
-                        <a href="inscription.php" class="btn btn-outline-light px-5 py-3 border-2 fw-bold text-white text-decoration-none">S'INSCRIRE</a>
-                    </div>
-                </div>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.php">REVIEWEO <span class="text-neon-green">GAMES</span></a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-3 align-items-center">
+    <li class="nav-item"><a class="nav-link active" href="index.php">Accueil</a></li>
+    <li class="nav-item"><a class="nav-link" href="rediger.php">Critiques</a></li>
+    <li class="nav-item"><a class="nav-link" href="voir_critiques.php">Avis Communauté</a></li>
+    <li class="nav-item"><a class="nav-link" href="tendances.php">Tendances</a></li>
+    
+    <?php if(isset($_SESSION['user_id'])): ?>
+        <?php if(isset($_SESSION['role']) && $_SESSION['role'] == 2): ?>
+            <li class="nav-item">
+                <a href="admin.php" class="btn btn-sm btn-outline-danger px-3 me-2">
+                    <i class="fas fa-shield-alt"></i> Console Admin
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <li class="nav-item">
+            <a href="mon_tableau_de_bord.php" class="nav-link text-neon-green">
+                <i class="fas fa-user-circle"></i> Mon Profil (<?= htmlspecialchars($_SESSION['pseudo']) ?>)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link btn-neon-red px-3" href="logout.php">Déconnexion</a>
+        </li>
+    <?php else: ?>
+        <li class="nav-item"><a class="nav-link" href="connexion.php">Connexion</a></li>
+        <li class="nav-item"><a class="nav-link btn-neon-blue px-3" href="inscription.php">S'inscrire</a></li>
+    <?php endif; ?>
+</ul>
             </div>
         </div>
-    </div>
+    </nav>
 
-    <div class="container my-5 py-5">
-        <div class="row text-center g-4 mb-5">
+    <header class="hero-section d-flex align-items-center justify-content-center text-center">
+        <div class="container position-relative" style="z-index: 2;">
+            <h1 class="display-2 fw-bold text-white mb-3">VOTRE UNIVERS <span class="text-neon-blue">GAMING</span></h1>
+            <p class="lead text-white-50 mb-4">Découvrez, notez et partagez vos meilleures expériences de jeu.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#game-container" class="btn btn-neon-blue btn-lg px-4 fw-bold">DÉCOUVRIR</a>
+                <a href="rediger.php" class="btn btn-outline-light btn-lg px-4">RÉDIGER UN AVIS</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container my-5">
+        <div class="row g-4 text-center">
             <div class="col-md-4">
                 <div class="glass-card h-100 border-blue p-4">
                     <i class="fas fa-gamepad fa-3x text-neon-blue mb-3"></i>
                     <h4 class="text-white fw-bold">EXPLOREZ</h4>
-                    <p class="text-white-50 small">Accédez aux données de millions de jeux grâce à l'API RAWG en temps réel.</p>
+                    <p class="text-white-50 small">Accédez à une base de données de milliers de jeux via l'API RAWG.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="glass-card h-100 border-red p-4">
-                    <i class="fas fa-pen-nib fa-3x text-neon-red mb-3"></i>
+                    <i class="fas fa-star fa-3x text-neon-red mb-3"></i>
                     <h4 class="text-white fw-bold">CRITIQUEZ</h4>
                     <p class="text-white-50 small">Notez vos jeux de 0 à 20 et partagez votre avis avec les membres.</p>
                 </div>
@@ -82,7 +85,7 @@ session_start();
                 <div class="glass-card h-100 border-green p-4">
                     <i class="fas fa-users fa-3x text-neon-green mb-3"></i>
                     <h4 class="text-white fw-bold">COMMUNAUTÉ</h4>
-                    <p class="text-white-50 small">Likez vos jeux favoris et suivez les tendances mondiales.</p>
+                    <p class="text-white-50 small">Likez les critiques et suivez les tendances des joueurs.</p>
                 </div>
             </div>
         </div>
@@ -91,13 +94,14 @@ session_start();
             <h3 class="text-white fw-bold">TOP SÉLECTION <span class="text-neon-blue">POUR VOUS</span></h3>
             <a href="tendances.php" class="text-neon-blue text-decoration-none small">Voir tout <i class="fas fa-chevron-right ms-1"></i></a>
         </div>
+        
         <div class="row" id="game-container"></div>
     </div>
 
     <footer class="bg-dark py-5 border-top border-secondary mt-5">
         <div class="container text-center text-white-50">
             <p class="mb-2 fw-bold text-white">REVIEWEO GAMES</p>
-            <p class="small">© 2026 Projet d'Étude. Données fournies par RAWG.io</p>
+            <p class="small mb-0">&copy; 2026 - Plateforme de critiques gaming. Tous droits réservés.</p>
         </div>
     </footer>
 

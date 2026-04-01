@@ -1,4 +1,4 @@
-const API_KEY = '7249ac9fe8124d69ad13f313134c38a4'; //*cles API//*
+const API_KEY = '7249ac9fe8124d69ad13f313134c38a4'; 
 let currentPage = 1;
 
 async function init() {
@@ -58,6 +58,12 @@ async function showDetails(id) {
     const res = await fetch(`https://api.rawg.io/api/games/${id}?key=${API_KEY}&lang=fr`);
     const game = await res.json();
     
+    // --- LIGNE AJOUTÉE POUR LE FORMULAIRE ---
+    if (document.getElementById('formGameName')) {
+        document.getElementById('formGameName').value = game.name;
+    }
+    // ----------------------------------------
+
     document.getElementById('modalTitle').innerText = game.name;
     document.getElementById('modalImg').src = game.background_image || 'https://via.placeholder.com/600x400/06090f/00d2ff?text=IMAGE+NON+DISPONIBLE';
     document.getElementById('modalRating').innerText = game.rating > 0 ? game.rating : "N/A";

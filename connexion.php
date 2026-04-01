@@ -1,6 +1,6 @@
 <?php
 session_start();
-?>
+?> 
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -45,6 +45,7 @@ session_start();
     </div>
 
     <script>
+        // Fonction pour basculer la visibilité du mot de passe
         function togglePass(id, icon) {
             const input = document.getElementById(id);
             input.type = input.type === "password" ? "text" : "password";

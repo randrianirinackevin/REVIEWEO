@@ -5,9 +5,8 @@ namespace App\Models;
 
 class Critique {
     private $conn;
-    private $table_name = "Critique";
+    private $table_name = "critique"; 
 
-    // Propriétés conformes au schéma 
     public $id;
     public $titre;
     public $contenu;
@@ -19,16 +18,13 @@ class Critique {
         $this->conn = $db;
     }
 
-    /**
-     * CREATE : Publier une critique 
-     */
     public function create() {
         $query = "INSERT INTO " . $this->table_name . " 
-                  SET titre=:titre, contenu=:contenu, note=:note, id_user=:id_user, date_creation=NOW()";
+                  SET titre=:titre, contenu=:contenu, note=:note, id_user=:id_user, date_creation=NOW()"; // date_creation est gérée par la base de données avec NOW()
 
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->prepare($query); 
 
-        $stmt->bindParam(":titre", $this->titre);
+        $stmt->bindParam(":titre", $this->titre);   
         $stmt->bindParam(":contenu", $this->contenu);
         $stmt->bindParam(":note", $this->note);
         $stmt->bindParam(":id_user", $this->id_user);
@@ -36,12 +32,11 @@ class Critique {
         return $stmt->execute();
     }
 
-    /**
-     * READ : Lister toutes les critiques 
-     */
+    // La méthode readAll récupère toutes les critiques avec le pseudo de l'auteur, triées par date de création décroissante
     public function readAll() {
+        
         $query = "SELECT c.*, u.pseudo FROM " . $this->table_name . " c 
-                  JOIN User u ON c.id_user = u.id 
+                  JOIN user u ON c.id_user = u.id 
                   ORDER BY c.date_creation DESC";
         
         $stmt = $this->conn->prepare($query);

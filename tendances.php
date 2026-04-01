@@ -19,6 +19,7 @@ session_start();
                 <li class="nav-item"><a class="nav-link" href="index.php">Accueil</a></li>
                 <li class="nav-item"><a class="nav-link" href="tendances.php">Tendances</a></li>
                 <li class="nav-item"><a class="nav-link" href="rediger.php">Critiques</a></li>
+                <li class="nav-item"><a class="nav-link" href="voir_critiques.php">Avis Communauté</a></li>
                 
                 <?php if(isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><span class="nav-link text-neon-green small">Salut, <?= $_SESSION['pseudo'] ?></span></li>
@@ -54,7 +55,7 @@ session_start();
                         <div class="col-md-8">
                             <h6 class="text-neon-green">L'AVIS DE LA COMMUNAUTÉ</h6>
                             <p id="modalDesc" class="text-white-50 small"></p>
-                            <a href="rediger.html" class="btn btn-neon-blue w-100 mt-3 fw-bold">RÉDIGER MA CRITIQUE</a>
+                            <a href="rediger.php" class="btn btn-neon-blue w-100 mt-3 fw-bold">RÉDIGER MA CRITIQUE</a>
                         </div>
                     </div>
                 </div>

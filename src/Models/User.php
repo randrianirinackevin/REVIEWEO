@@ -5,32 +5,26 @@ use PDO;
 
 class User {
     private $conn;
-    private $table_name = "User";
+    private $table_name = "user"; 
 
-    // Propriétés conformes au schéma imposé 
     public $id;
     public $pseudo;
     public $email;
     public $password;
-    public $role; // 0: Utilisateur, 1: Critique, 2: Admin 
+    public $role;
 
     public function __construct($db) {
         $this->conn = $db;
     }
 
-    /**
-     * MÉTHODE SIGN UP (Inscription)
-     */
+    // La méthode register insère un nouvel utilisateur dans la base de données avec un mot de passe haché et un rôle par défaut de 0 (utilisateur standard)
     public function register() {
         $query = "INSERT INTO " . $this->table_name . " 
                   SET pseudo = :pseudo, email = :email, password = :password, role = :role";
 
         $stmt = $this->conn->prepare($query);
 
-        // Hachage du mot de passe pour la sécurité
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
-        
-        // Par défaut, un nouvel inscrit est un simple "Utilisateur" (role 0)
         $this->role = 0;
 
         $stmt->bindParam(":pseudo", $this->pseudo);
@@ -41,9 +35,8 @@ class User {
         return $stmt->execute();
     }
 
-    /**
-     * MÉTHODE LOGIN (Connexion) - Déjà créée
-     */
+
+    // La méthode login vérifie les informations d'identification de l'utilisateur, récupère son rôle et démarre une session si l'authentification est réussie
     public function login() {
         $query = "SELECT id, pseudo, password, role FROM " . $this->table_name . " WHERE email = :email LIMIT 1";
         
@@ -56,7 +49,7 @@ class User {
             if(password_verify($this->password, $row['password'])) {
                 $this->id = $row['id'];
                 $this->pseudo = $row['pseudo'];
-                $this->role = $row['role']; // On récupère aussi le rôle pour les accès 
+                $this->role = $row['role'];
                 return true;
             }
         }

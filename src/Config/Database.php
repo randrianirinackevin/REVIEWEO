@@ -1,5 +1,5 @@
 <?php
-namespace App\Config; // AJOUT INDISPENSABLE
+namespace App\Config; 
 
 use PDO; // Importation de la classe PDO native
 use PDOException;
@@ -14,9 +14,9 @@ class Database {
     public function getConnection() {
         $this->conn = null;
         try {
-            // Ajout du charset directement dans le DSN pour plus de sécurité
+            // Correction : ajout de charset=utf8 pour éviter les problèmes d'encodage
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=utf8", $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Mode d'erreur pour les exceptions
         } catch(PDOException $exception) {
             echo "Erreur de connexion : " . $exception->getMessage();
         }
